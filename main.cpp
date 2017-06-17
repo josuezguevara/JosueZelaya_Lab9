@@ -11,17 +11,27 @@
 
 using namespace std;
 
-//vector<Carro*> cargarTXT(vector<Carro*>);
+vector<Carro*> cargarTXT(vector<Carro*>);
+vector<Usuario*> cargarUsuario(vector<Usuario*>);
 
 int main(){
 
       Usuario* user;
+      ofstream archivo1;
+      ofstream archivo2;
+
       user=new Administrador("Josue", "Zelaya", "Polo", 22);
 
       vector<Usuario*> usuarios;
       usuarios.push_back(user);
       vector<Carro*> carros;
-      //carros=cargarTXT(carros);
+      vector<Carro*> carros2;
+      vector<Usuario*> usuarios2;
+      carros=cargarTXT(carros2);
+      usuarios=cargarUsuario(usuarios2);
+
+      archivo1.open("Usuario.txt",ios::app);
+      archivo2.open("Reporte.txt",ios::app);
       bool libre=false;
 
       while (!libre){
@@ -31,15 +41,15 @@ int main(){
         <<"[3]. Listar"<<endl
         <<"[4]. Salir"<<endl;
         cout<<"Ingrese opcion: "<<endl;
-
         cin>>opcion;
         switch (opcion) {
+            int op;
           case 1:{//registrase
             cout<<"Como desea registrase?"<<endl
             <<"[1]. Administador"<<endl
             <<"[2]. Cliente"<<endl;
             cout<<"Ingrese opcion: "<<endl;
-            int op;
+
             cin>>op;
             string username, password,cargo, membresia;
             int num;
@@ -56,6 +66,7 @@ int main(){
 
               Usuario* admin=new Administrador(username,password,cargo,num);
               usuarios.push_back(admin);
+              archivo1<<"Nombre: "<<username<< " Contraseña: "<<password<<" Numero de seguro social"<<num;
               cout<<"Se ha registrado correctamente"<<endl;
 
 
@@ -70,6 +81,7 @@ int main(){
               Usuario* cliente=new Cliente(username, password,membresia);
               usuarios.push_back(cliente);
               cout<<"Se ha registrado correctamente"<<endl;
+              archivo1<<"Nombre: "<< username<< "Contraseña "<<password<< " Membresia: "<<membresia;
 
             }else{
               cout<<"Opcion no valida"<<endl;
@@ -79,7 +91,6 @@ int main(){
           }
           case 2:{ //login
             string username,pass;
-
             cout<<"Ingrese username: "<<endl;
             cin>>username;
             cout<<"Ingrese contraseña: "<<endl;
@@ -91,6 +102,7 @@ int main(){
                 if (dynamic_cast<Administrador*>(usuarios[i])){
                   cout<<"Administrador"<<endl;
                   bool fue=false;
+
                   while (!fue){
                     cout<<"[1]. Agregar"<<endl;
                     cout<<"[2]. Modificar"<<endl;
@@ -98,11 +110,12 @@ int main(){
                     cout<<"[4]. Listar Carros"<<endl;
                     cout<<"[5]. Salir"<<endl;
                     cout<<"Ingrese opcion"<<endl;
-                    int opt=0;
-                    string marca, modelo;
-                    int year;
-                    double precio;
+                    int opt;
+                    cin>>opt;
                     if (opt==1){
+                      string marca, modelo;
+                      int year;
+                      double precio;
                       cout<<"Ingrese Marca: "<<endl;
                       cin>>marca;
                       cout<<"Ingrese modelo: "<<endl;
@@ -114,6 +127,9 @@ int main(){
                       Carro* carro=new Carro(marca,modelo,year,precio,"Disponible");
                       carros.push_back(carro);
                     }else if (opt==2){
+                      string marca, modelo;
+                      int year;
+                      double precio;
                       int pos;
                       string estado;
                       cout<<"Ingrese posicion a modificar"<<endl;
@@ -185,7 +201,8 @@ int main(){
                           cout<<"No se pudo abrir el archivo";
                           exit(1);
                         }
-                        //archivo<<carros[pos].get<<endl;*/
+                        archivo<<carros[pos].get<<endl;*/
+                        
                         break;
                       }
                       case 3:{
@@ -203,20 +220,25 @@ int main(){
                         break;
                       }
                     }
-
                   }
 
                 }
-
-
-
+                break;
               }else{
                 cout<<"Usuario y Contraseña Incorrectos"<<endl;
               }
+
             }
             break;
             }
             case 3:{
+              for (int i = 0; i < carros.size(); i++) {
+                  cout<<" [ " <<i<<" ] ";
+                 cout<<" Marca: "<<carros[i]->getMarca()<< " Modelo:  "
+                 <<carros[i]->getModelo()<<cout<<" Año "<<
+                 carros[i]->getYear()<<cout<<" Precio: "<<carros[i]->getPrecio()<<
+                 cout<< " Placa "<<carros[i]->getPlaca()<<endl;
+              }
               break;
             }
             case 4:{
@@ -234,7 +256,7 @@ int main(){
 
 
 
-/*vector<Carro*> cargarTXT(vector<Carro*> carros){
+vector<Carro*> cargarTXT(vector<Carro*> carros){
 
 
 	ifstream archivo;
@@ -263,4 +285,47 @@ int main(){
 	}
 
 	return carros;
-}*/
+}
+
+vector<Usuario*> cargarUsuario(vector<Usuario*> usuarios){
+
+	ifstream archivo;
+  archivo.open("Usuario.txt", ios::in);
+
+   	while(!archivo.eof()){
+
+      if (typeid(usuarios)==typeid(Administrador)){
+        string usuario;
+        string password;
+        string cargo;
+        int num_seguro;
+
+        archivo>>usuario;
+        archivo>>password;
+        archivo>>cargo;
+        archivo>>num_seguro;
+
+        Usuario* user = new Administrador(usuario,password,cargo,num_seguro);
+    		usuarios.push_back(user);
+        archivo.close();
+
+        return usuarios;
+      }else if (typeid(usuarios)==typeid(Cliente)){
+        string usuario;
+        string password;
+        string membresia;
+
+        archivo>>usuario;
+        archivo>>password;
+        archivo>>membresia;
+
+        Usuario* user = new Cliente(usuario,password, membresia);
+    		usuarios.push_back(user);
+        archivo.close();
+
+        return usuarios;
+      }
+
+	}
+
+}
