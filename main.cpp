@@ -11,25 +11,27 @@
 
 using namespace std;
 
-vector<Carro*> cargarTXT(vector<Carro*>);
+//vector<Carro*> cargarTXT(vector<Carro*>);
 
 int main(){
-      bool libre=false;
+
       Usuario* user;
-      user=new Administrador("Josue", "Zelaya", "Polo",123);
+      user=new Administrador("Josue", "Zelaya", "Polo", 22);
 
       vector<Usuario*> usuarios;
       usuarios.push_back(user);
       vector<Carro*> carros;
-      carros=cargarTXT(carros);
+      //carros=cargarTXT(carros);
+      bool libre=false;
 
       while (!libre){
+        int opcion;
         cout<<"[1]. Registrarse"<<endl
         <<"[2]. Login"<<endl
         <<"[3]. Listar"<<endl
         <<"[4]. Salir"<<endl;
         cout<<"Ingrese opcion: "<<endl;
-        int opcion;
+
         cin>>opcion;
         switch (opcion) {
           case 1:{//registrase
@@ -86,72 +88,107 @@ int main(){
               cout<<"Entro 1"<<endl;
               if ((username==usuarios[i]->getUsuario()) && (pass==usuarios[i]->getPassword())){
                 cout<<"Entro 2"<<endl;
-                /*if (typeid(*usuarios[i])==typeid(Administrador)){
-                  cout<<"Administrador"<<endl;
-                }else if (dynamic_cast(*usuarios[i])==dynamic_cast(Cliente)){
-                  cout<<"Cliente"<<endl;
-                }*/
                 if (dynamic_cast<Administrador*>(usuarios[i])){
                   cout<<"Administrador"<<endl;
-                  bool libre=false;
-                  while(!libre){
-                    cout<<"[1]. Agregar"<<endl
-                    <<"[2]. Modificar"<<endl
-                    <<"[3]. Eliminar"<<endl
-                    <<"[4]. Listar Carros"<<endl
-                    <<"[5]. Salir"<<endl;
+                  bool fue=false;
+                  while (!fue){
+                    cout<<"[1]. Agregar"<<endl;
+                    cout<<"[2]. Modificar"<<endl;
+                    cout<<"[3]. Eliminar"<<endl;
+                    cout<<"[4]. Listar Carros"<<endl;
+                    cout<<"[5]. Salir"<<endl;
                     cout<<"Ingrese opcion"<<endl;
-                    int opcion;
+                    int opt=0;
                     string marca, modelo;
                     int year;
                     double precio;
-                    switch (opcion) {
-                      case 1:{//agregar
-                        cout<<"Ingrese Marca: "<<endl;
-                        cin>>marca;
-                        cout<<"Ingrese modelo: "<<endl;
-                        cin>>modelo;
-                        cout<<"Ingrese el año: "<<endl;
-                        cin>>year;
-                        cout<<"Ingrese el precio de alquiler"<<endl;
-                        cin>>precio;
-                        Carro* carro=new Carro(marca,modelo,year,precio,"Disponible");
-                        carros.push_back(carro);
-                        break;
+                    if (opt==1){
+                      cout<<"Ingrese Marca: "<<endl;
+                      cin>>marca;
+                      cout<<"Ingrese modelo: "<<endl;
+                      cin>>modelo;
+                      cout<<"Ingrese el año: "<<endl;
+                      cin>>year;
+                      cout<<"Ingrese el precio de alquiler"<<endl;
+                      cin>>precio;
+                      Carro* carro=new Carro(marca,modelo,year,precio,"Disponible");
+                      carros.push_back(carro);
+                    }else if (opt==2){
+                      int pos;
+                      string estado;
+                      cout<<"Ingrese posicion a modificar"<<endl;
+                      cin>>pos;
+
+                      cout<<"Ingrese Marca Nuevo: "<<endl;
+                      cin>>marca;
+                      cout<<"Ingrese modelo nueva: "<<endl;
+                      cin>>modelo;
+                      cout<<"Ingrese el año nuevo: "<<endl;
+                      cin>>year;
+                      cout<<"Ingrese el precio de alquiler nuevo"<<endl;
+                      cin>>precio;
+                      cout<<"Ingrese estado"<<endl;
+                      cin>>estado;
+
+
+                      carros[pos]->setMarca(marca);
+                      carros[pos]->setModelo(marca);
+                      carros[pos]->setYear(year);
+                      carros[pos]->setPrecio(precio);
+                      carros[pos]->setEstado(estado);
+                    }else if (opt==3){
+                      int pos;
+                      cout<<"Ingrese posicion a eliminar"<<endl;
+                      cin>>pos;
+                      carros.erase(carros.begin()+pos);
+                    }else if (opt==4){
+                      for (int i = 0; i < carros.size(); i++) {
+                          cout<<" [ " <<i<<" ] ";
+                         cout<<" Marca: "<<carros[i]->getMarca()<< " Modelo:  "
+                         <<carros[i]->getModelo()<<cout<<" Año "<<
+                         carros[i]->getYear()<<cout<<" Precio: "<<carros[i]->getPrecio()<<
+                         cout<< " Placa "<<carros[i]->getPlaca()<<endl;
                       }
-                      case 2:{//modificar
+                    }else if (opt==5){
+                      fue=true;
+                    }
+                  }
+
+                }else if (dynamic_cast<Cliente*>(usuarios[i])){
+                  bool seva=false;
+
+                  while (!seva){
+                    cout<<"Cliente"<<endl;
+                    cout<<"Que desea hacer: "<<endl;
+                    cout<<"[1]. Alquilar"<<endl
+                    <<"[2]. Factura"<<endl
+                    <<"[3]. Listar"<<endl
+                    <<"[4]. Salir"<<endl;
+                    cout<<"Ingrese opcion : "<<endl;
+                    int op;
+                    cin>>op;
+
+                    switch (op) {
+                      case 1:{//alquilar
+                        cout<<"Ingrese posicion del carro que quiere alquilar: "<<endl;
                         int pos;
-                        string estado;
-                        cout<<"Ingrese posicion a modificar"<<endl;
                         cin>>pos;
-
-                        cout<<"Ingrese Marca Nuevo: "<<endl;
-                        cin>>marca;
-                        cout<<"Ingrese modelo nueva: "<<endl;
-                        cin>>modelo;
-                        cout<<"Ingrese el año nuevo: "<<endl;
-                        cin>>year;
-                        cout<<"Ingrese el precio de alquiler nuevo"<<endl;
-                        cin>>precio;
-                        cout<<"Ingrese estado"<<endl;
-                        cin>>estado;
+                        carros[pos]->setEstado("Alquilado");
 
 
-                        carros[pos]->setMarca(marca);
-                        carros[pos]->setModelo(marca);
-                        carros[pos]->setYear(year);
-                        carros[pos]->setPrecio(precio);
-                        carros[pos]->setEstado(estado);
                         break;
                       }
-                      case 3:{//eliminar
-                        int pos;
-                        cout<<"Ingrese posicion a eliminar"<<endl;
-                        cin>>pos;
-                        carros.erase(carros.begin()+pos);
+                      case 2:{//factura
+                        /*ofstream archivo;
+                        archivo.open("Factura.txt", ios::app);//abrimos el archivo en modo añadir
+                        if (archivo.fail()){
+                          cout<<"No se pudo abrir el archivo";
+                          exit(1);
+                        }
+                        //archivo<<carros[pos].get<<endl;*/
                         break;
                       }
-                      case 4:{//listar
+                      case 3:{
                         for (int i = 0; i < carros.size(); i++) {
                             cout<<" [ " <<i<<" ] ";
                            cout<<" Marca: "<<carros[i]->getMarca()<< " Modelo:  "
@@ -161,41 +198,43 @@ int main(){
                         }
                         break;
                       }
-                      case 5:{
-                        libre=true;
+                      case 4:{
+                        seva=true;
                         break;
                       }
                     }
+
                   }
 
-                }else if (dynamic_cast<Cliente*>(usuarios[i])){
-                  cout<<"Cliente"<<endl;
                 }
 
-                break;
+
+
               }else{
                 cout<<"Usuario y Contraseña Incorrectos"<<endl;
-
               }
             }
             break;
+            }
+            case 3:{
+              break;
+            }
+            case 4:{
+                libre=true;
+              break;
+            }
           }
-          case 3:{
-            break;
-          }
-          case 4:{
-              libre=true;
-            break;
-          }
+
         }//fin switch
-
-
+        return 0;
       }
 
-     return 0;
-}
 
-vector<Carro*> cargarTXT(vector<Carro*> carros){
+
+
+
+
+/*vector<Carro*> cargarTXT(vector<Carro*> carros){
 
 
 	ifstream archivo;
@@ -220,7 +259,8 @@ vector<Carro*> cargarTXT(vector<Carro*> carros){
 
  		Carro* carro = new Carro(marca,modelo,precio,year,estado);
 		carros.push_back(carro);
+    archivo.close();
 	}
 
 	return carros;
-}
+}*/
